@@ -9,42 +9,35 @@ pipeline {
 
         stage('Check Docker') {
             steps {
-                bat 'docker --version'
+                sh 'docker --version'
             }
         }
 
         stage('Build the application') {
             steps {
-                bat 'mvn clean package'
+                sh 'mvn clean package'
             }
         }
 
         stage('Unit Test Execution') {
             steps {
-                bat 'mvn test'
+                sh 'mvn test'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat 'docker build -t triangle-app:1.0 .'
+                sh 'docker build -t triangle-app:1.0 .'
             }
         }
-        
+
         stage('Push to Docker Hub') {
             steps {
-                withCredentials([
-                  string(
-                      credentialsId: 'dockerhubpass',
-                       variable: 'dockerHubPass'
-                   )
-              ]) {
-                  bat '''
-                    docker login -u nyainamitia -p %dockerHubPass%
-                    docker tag triangle-app:1.0 nyainamitia/triangle-app:1.0
-                    docker push nyainamitia/triangle-app:1.0
-                    '''
-              }
+                withCredentials([string(credentialsId: 'dockerhubpass', variable: 'dockerHubPass')]) {
+                    sh 'docker login -u nyainamitia -p $dockerHubPass'
+                    sh 'docker tag triangle-app:1.0 nyainamitia/triangle-app:1.0'
+                    sh 'docker push nyainamitia/triangle-app:1.0'
+                }
             }
         }
     }
