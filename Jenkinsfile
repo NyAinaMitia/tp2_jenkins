@@ -46,7 +46,7 @@ pipeline {
         failure {
             emailext body: 'Ce Build $BUILD_NUMBER a echoue',
                      recipientProviders: [requestor()],
-                     subject: 'Build echoue',
+                     subject: 'Build echoue erreur',
                      to: 'mitiarazafimanantsoa@gmail.com'
         }
     }
